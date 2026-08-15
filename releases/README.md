@@ -1,5 +1,13 @@
 # Builds
 
+## BlueBridge for macOS v0.2.0
+
+- Target: Apple silicon, macOS 14 or newer
+- SHA-256: `ecb848e076058d1da7a243caf6d3a468b55961481f894dc2210d6f2e636bf120`
+- Signature: ad-hoc local testing signature
+- UI: simplified information-first layout; Chinese-only user interface; grayscale palette with status colors only
+- Audio capability: same real CoreAudio and ScreenCaptureKit route as v0.1.0
+
 ## BlueBridge for macOS v0.1.0
 
 - Target: Apple silicon, macOS 14 or newer

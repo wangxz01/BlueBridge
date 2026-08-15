@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -45,9 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-private val DeepTeal = Color(0xFF123439)
-private val Lime = Color(0xFFD9FF75)
-private val Canvas = Color(0xFFEEF1EC)
+private val Ink = Color(0xFF171717)
+private val Canvas = Color(0xFFF4F4F2)
+private val Surface = Color.White
+private val Line = Color(0xFFDDDDD8)
+private val Muted = Color(0xFF6B6B67)
+private val StatusGreen = Color(0xFF2E7D4F)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,17 +66,19 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BlueBridgeApp(model: BlueBridgeViewModel = viewModel()) {
     var page by remember { mutableIntStateOf(0) }
+    val pages = listOf("路由", "设备", "场景", "设置")
+
     Scaffold(
         containerColor = Canvas,
         bottomBar = {
-            NavigationBar(containerColor = DeepTeal) {
-                listOf("Overview", "Devices", "Presets", "Settings").forEachIndexed { index, label ->
+            NavigationBar(containerColor = Ink) {
+                pages.forEachIndexed { index, label ->
                     NavigationBarItem(
                         selected = page == index,
                         onClick = { page = index },
-                        icon = { Text(listOf("▦", "◇", "✦", "⚙")[index], color = if (page == index) DeepTeal else Color.White) },
-                        label = { Text(label, color = if (page == index) Lime else Color.White.copy(alpha = .68f), fontSize = 10.sp) },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(indicatorColor = Lime),
+                        icon = { Text(listOf("01", "02", "03", "04")[index], fontSize = 10.sp, color = if (page == index) Ink else Color.White.copy(alpha = .55f)) },
+                        label = { Text(label, fontSize = 10.sp, color = if (page == index) Color.White else Color.White.copy(alpha = .6f)) },
+                        colors = NavigationBarItemDefaults.colors(indicatorColor = Surface),
                     )
                 }
             }
@@ -78,28 +86,26 @@ fun BlueBridgeApp(model: BlueBridgeViewModel = viewModel()) {
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item { Header(model.status) }
-            if (page == 0) {
-                item { RouteCard(model.session, model::toggleRoute) }
-                item { SectionTitle("Live mixer", "Mix local and remote audio independently") }
-                items(model.sources, key = { it.id }) { source -> MixerCard(source, { model.updateVolume(source.id, it) }, { model.toggleMute(source.id) }) }
-                item { SectionTitle("Trusted devices", "Nearby and ready to reconnect") }
-                items(model.devices, key = { it.id }) { DeviceCard(it) }
-                item { Presets(model::startPreset) }
-            } else if (page == 1) {
-                item { SectionTitle("All trusted devices", "First connection requires confirmation on both devices") }
-                items(model.devices, key = { it.id }) { DeviceCard(it) }
-                item { Button(onClick = model::scan, colors = ButtonDefaults.buttonColors(containerColor = Lime, contentColor = DeepTeal), modifier = Modifier.fillMaxWidth()) { Text("Pair a new device", fontWeight = FontWeight.Bold) } }
-            } else if (page == 2) {
-                item { Presets(model::startPreset) }
-            } else {
-                items(listOf("Auto reconnect", "Choose the best local link", "Audio loop protection")) { setting ->
-                    Card(colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = .8f)), shape = RoundedCornerShape(18.dp)) {
-                        Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) { Text(setting, fontWeight = FontWeight.SemiBold); Spacer(Modifier.weight(1f)); Text("ON", color = DeepTeal, fontWeight = FontWeight.Bold) }
+            item { Header(pages[page], model.status) }
+            when (page) {
+                0 -> {
+                    item { RouteCard(model.session, model::toggleRoute) }
+                    item { SectionTitle("混音", "每一路声音可独立调整") }
+                    items(model.sources, key = { it.id }) { source ->
+                        MixerRow(source, { model.updateVolume(source.id, it) }, { model.toggleMute(source.id) })
                     }
+                    item { SectionTitle("可信设备", "附近且可以自动重连") }
+                    items(model.devices, key = { it.id }) { DeviceRow(it) }
                 }
+                1 -> {
+                    item { SectionTitle("设备列表", "首次连接需要在两台设备上确认") }
+                    items(model.devices, key = { it.id }) { DeviceRow(it) }
+                    item { PrimaryButton("扫描附近设备", model::scan) }
+                }
+                2 -> item { Presets(model::startPreset) }
+                3 -> items(listOf("自动重连", "自动选择最佳链路", "音频回环保护")) { SettingRow(it) }
             }
             item { Spacer(Modifier.height(8.dp)) }
         }
@@ -107,65 +113,89 @@ fun BlueBridgeApp(model: BlueBridgeViewModel = viewModel()) {
 }
 
 @Composable
-private fun Header(status: String) {
-    Column(Modifier.padding(top = 26.dp, bottom = 5.dp)) {
-        Text("BlueBridge", color = DeepTeal, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        Text(status, color = Color(0xFF6D797D), fontSize = 12.sp)
+private fun Header(title: String, status: String) {
+    Column(Modifier.padding(top = 26.dp, bottom = 6.dp)) {
+        Text(title, color = Ink, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(status, color = Muted, fontSize = 12.sp)
     }
 }
 
 @Composable
 private fun RouteCard(session: RouteSession, onToggle: () -> Unit) {
-    Card(colors = CardDefaults.cardColors(containerColor = DeepTeal), shape = RoundedCornerShape(26.dp)) {
-        Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column { Text(if (session.running) "LIVE ROUTE" else "PAUSED", color = Lime, fontSize = 10.sp, fontWeight = FontWeight.Bold); Text(session.name, color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Bold) }
-                Spacer(Modifier.weight(1f)); TextButton(onClick = onToggle) { Text(if (session.running) "Stop" else "Resume", color = Color.White) }
+    SurfaceCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column {
+                Text("当前路由", color = Muted, fontSize = 10.sp)
+                Text(session.name, color = Ink, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                RouteNode("▱", session.source, "Source")
-                Text("━━", color = Lime)
-                RouteNode("▯", session.sink, "Mix hub")
-                Text("━━", color = Lime)
-                RouteNode("⌾", session.output, "Output")
+            Spacer(Modifier.weight(1f))
+            Button(onClick = onToggle, colors = ButtonDefaults.buttonColors(containerColor = Ink, contentColor = Color.White)) {
+                Text(if (session.running) "停止" else "恢复")
             }
-            Text("↯ ${session.latencyMs} ms   ◎ ${session.link}   48 kHz", color = Color.White.copy(alpha = .64f), fontSize = 10.sp)
+        }
+
+        Spacer(Modifier.height(18.dp))
+        RouteInfo("01", "来源", session.source)
+        RouteArrow()
+        RouteInfo("02", "目标", session.sink)
+        RouteArrow()
+        RouteInfo("03", "输出", session.output)
+        Spacer(Modifier.height(16.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(7.dp).background(if (session.running) StatusGreen else Muted, CircleShape))
+            Text(if (session.running) " 运行中" else " 已暂停", color = if (session.running) StatusGreen else Muted, fontSize = 11.sp)
+            Spacer(Modifier.weight(1f))
+            Text("${session.link} · ${session.latencyMs} ms · 48 kHz", color = Muted, fontSize = 10.sp)
         }
     }
 }
 
 @Composable
-private fun RouteNode(symbol: String, name: String, detail: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.size(width = 86.dp, height = 90.dp)) {
-        Box(Modifier.size(48.dp).background(Color.White.copy(alpha = .1f), RoundedCornerShape(15.dp)), contentAlignment = Alignment.Center) { Text(symbol, color = Color.White, fontSize = 21.sp) }
-        Text(name, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
-        Text(detail, color = Color.White.copy(alpha = .5f), fontSize = 8.sp)
+private fun RouteInfo(index: String, label: String, value: String) {
+    Row(Modifier.fillMaxWidth().background(Canvas, RoundedCornerShape(8.dp)).padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(index, color = Muted, fontSize = 10.sp)
+        Text(label, color = Muted, fontSize = 10.sp, modifier = Modifier.padding(start = 8.dp))
+        Spacer(Modifier.weight(1f))
+        Text(value, color = Ink, fontSize = 13.sp, fontWeight = FontWeight.Medium)
     }
 }
+
+@Composable
+private fun RouteArrow() { Text("↓", color = Muted, modifier = Modifier.padding(start = 16.dp, top = 3.dp, bottom = 3.dp)) }
 
 @Composable
 private fun SectionTitle(title: String, detail: String) {
-    Column(Modifier.padding(top = 9.dp)) { Text(title, color = DeepTeal, fontSize = 18.sp, fontWeight = FontWeight.Bold); Text(detail, color = Color(0xFF6D797D), fontSize = 11.sp) }
-}
-
-@Composable
-private fun MixerCard(source: MixerSource, onVolume: (Float) -> Unit, onMute: () -> Unit) {
-    Card(colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = .8f)), shape = RoundedCornerShape(18.dp)) {
-        Column(Modifier.padding(17.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) { Text(source.name, fontWeight = FontWeight.SemiBold); Spacer(Modifier.weight(1f)); TextButton(onClick = onMute) { Text(if (source.muted) "Unmute" else "Mute", color = DeepTeal, fontSize = 11.sp) } }
-            Slider(value = source.volume, onValueChange = onVolume)
-            Text(source.detail, color = Color(0xFF6D797D), fontSize = 10.sp)
-        }
+    Column(Modifier.padding(top = 8.dp)) {
+        Text(title, color = Ink, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+        Text(detail, color = Muted, fontSize = 11.sp)
     }
 }
 
 @Composable
-private fun DeviceCard(device: BridgeDevice) {
-    Card(colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = .8f)), shape = RoundedCornerShape(18.dp)) {
-        Row(Modifier.fillMaxWidth().padding(17.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(44.dp).background(Color(0xFFE8F1E8), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) { Text("◇", color = DeepTeal, fontSize = 20.sp) }
-            Column(Modifier.padding(start = 13.dp)) { Text(device.name, fontWeight = FontWeight.SemiBold); Text("${device.platform} · ${device.detail}", color = Color(0xFF6D797D), fontSize = 10.sp) }
-            Spacer(Modifier.weight(1f)); Box(Modifier.size(7.dp).background(if (device.isOnline) Color(0xFF72B849) else Color.Gray, CircleShape))
+private fun MixerRow(source: MixerSource, onVolume: (Float) -> Unit, onMute: () -> Unit) {
+    SurfaceCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(source.name, color = Ink, fontWeight = FontWeight.Medium)
+                Text(source.detail, color = Muted, fontSize = 10.sp)
+            }
+            TextButton(onClick = onMute) { Text(if (source.muted) "取消静音" else "静音", color = Ink, fontSize = 11.sp) }
+        }
+        Slider(value = source.volume, onValueChange = onVolume)
+    }
+}
+
+@Composable
+private fun DeviceRow(device: BridgeDevice) {
+    SurfaceCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(device.name, color = Ink, fontWeight = FontWeight.Medium)
+                Text("${device.platform} · ${device.detail}", color = Muted, fontSize = 10.sp)
+            }
+            Box(Modifier.size(7.dp).background(if (device.isOnline) StatusGreen else Muted, CircleShape))
+            Text(if (device.isOnline) " 在线" else " 离线", color = if (device.isOnline) StatusGreen else Muted, fontSize = 10.sp)
         }
     }
 }
@@ -173,19 +203,50 @@ private fun DeviceCard(device: BridgeDevice) {
 @Composable
 private fun Presets(onStart: (BuiltInPreset) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        SectionTitle("Presets", "Restore a complete route in one tap")
-        listOf(
-            Triple("Gaming + Study", "Phone → Windows → 2.4G", BuiltInPreset.GamingStudy),
-            Triple("Library", "Mac → Android → headphones", BuiltInPreset.Library),
-        ).forEach { (name, route, preset) ->
-            Card(colors = CardDefaults.cardColors(containerColor = if (preset == BuiltInPreset.GamingStudy) DeepTeal else Color.White), shape = RoundedCornerShape(18.dp)) {
-                Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text(name, color = if (preset == BuiltInPreset.GamingStudy) Color.White else DeepTeal, fontWeight = FontWeight.Bold); Text(route, color = if (preset == BuiltInPreset.GamingStudy) Color.White.copy(alpha = .6f) else Color.Gray, fontSize = 10.sp) }
-                    Spacer(Modifier.weight(1f)); Button(onClick = { onStart(preset) }, colors = ButtonDefaults.buttonColors(containerColor = Lime, contentColor = DeepTeal)) { Text("▶") }
-                }
+        SectionTitle("场景", "一键恢复来源、输出和音量")
+        PresetRow("游戏 + 学习", "手机 → Windows → 2.4G 耳机") { onStart(BuiltInPreset.GamingStudy) }
+        PresetRow("图书馆", "Mac → Android → 蓝牙耳机") { onStart(BuiltInPreset.Library) }
+    }
+}
+
+@Composable
+private fun PresetRow(name: String, route: String, onStart: () -> Unit) {
+    SurfaceCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(name, color = Ink, fontWeight = FontWeight.SemiBold)
+                Text(route, color = Muted, fontSize = 10.sp)
             }
+            Button(onClick = onStart, colors = ButtonDefaults.buttonColors(containerColor = Ink, contentColor = Color.White)) { Text("启动") }
         }
     }
+}
+
+@Composable
+private fun SettingRow(name: String) {
+    SurfaceCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(name, color = Ink, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.weight(1f))
+            Text("已开启", color = StatusGreen, fontSize = 11.sp)
+        }
+    }
+}
+
+@Composable
+private fun PrimaryButton(label: String, onClick: () -> Unit) {
+    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = Ink, contentColor = Color.White), modifier = Modifier.fillMaxWidth()) {
+        Text(label, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+private fun SurfaceCard(content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Surface),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, Line, RoundedCornerShape(12.dp)),
+    ) { Column(Modifier.padding(16.dp), content = content) }
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 844)

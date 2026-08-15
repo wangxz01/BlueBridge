@@ -14,7 +14,7 @@ enum AudioDeviceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .property(let status):
-            return "CoreAudio returned error \(status)."
+            return "CoreAudio 返回错误 \(status)。"
         }
     }
 }
@@ -91,7 +91,7 @@ struct AudioDeviceService {
         var value: Unmanaged<CFString>?
         var size = UInt32(MemoryLayout<Unmanaged<CFString>?>.size)
         try check(AudioObjectGetPropertyData(id, &address, 0, nil, &size, &value))
-        guard let value else { return "Unknown audio output" }
+        guard let value else { return "未知音频输出" }
         return value.takeUnretainedValue() as String
     }
 

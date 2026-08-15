@@ -8,7 +8,7 @@ SwiftUI application for macOS 14 and newer. Version 0.1 enumerates real CoreAudi
 bash apps/macos/scripts/package.sh
 ```
 
-This creates an ad-hoc signed `artifacts/BlueBridge.app` and a zip archive for local testing. The first route start requests Screen & System Audio Recording permission. Reopen the application after granting it.
+This creates an ad-hoc signed `artifacts/BlueBridge.app` and a v0.2.0 zip archive for local testing. The first route start requests Screen & System Audio Recording permission. Reopen the application after granting it.
 
 Native integration targets:
 

@@ -10,11 +10,11 @@ struct BlueBridgeMacApp: App {
         if CommandLine.arguments.contains("--self-test") {
             do {
                 let outputs = try AudioDeviceService().outputDevices()
-                print("BlueBridge self-test: \(outputs.count) real CoreAudio output(s)")
-                outputs.forEach { print("- \($0.name)\($0.isDefault ? " (default)" : "")") }
+                print("BlueBridge 自检：发现 \(outputs.count) 个真实 CoreAudio 输出")
+                outputs.forEach { print("- \($0.name)\($0.isDefault ? "（默认）" : "")") }
                 Darwin.exit(outputs.isEmpty ? 2 : 0)
             } catch {
-                fputs("BlueBridge self-test failed: \(error.localizedDescription)\n", stderr)
+                fputs("BlueBridge 自检失败：\(error.localizedDescription)\n", stderr)
                 Darwin.exit(1)
             }
         }
@@ -29,12 +29,12 @@ struct BlueBridgeMacApp: App {
         .windowStyle(.hiddenTitleBar)
 
         MenuBarExtra("BlueBridge", systemImage: "wave.3.right.circle.fill") {
-            Button(model.isRunning ? "Stop current route" : "Start system audio route") {
+            Button(model.isRunning ? "停止当前路由" : "启动系统音频路由") {
                 model.isRunning ? model.stop() : model.toggleRoute()
             }
             Divider()
-            Button("Open BlueBridge") { NSApp.activate(ignoringOtherApps: true) }
-            Button("Quit") { NSApp.terminate(nil) }
+            Button("打开 BlueBridge") { NSApp.activate(ignoringOtherApps: true) }
+            Button("退出") { NSApp.terminate(nil) }
         }
     }
 }

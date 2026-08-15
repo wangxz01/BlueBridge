@@ -9,34 +9,34 @@ import androidx.lifecycle.ViewModel
 class BlueBridgeViewModel : ViewModel() {
     var session by mutableStateOf(
         RouteSession(
-            name = "Library",
+            name = "图书馆",
             source = "MacBook Air",
-            sink = "This Pixel 9",
+            sink = "本机 Pixel 9",
             output = "Pixel Buds Pro",
-            link = "Phone hotspot",
+            link = "手机热点",
             latencyMs = 21,
             running = true,
         )
     )
         private set
 
-    var status by mutableStateOf("Local audio only — nothing is uploaded")
+    var status by mutableStateOf("仅在本地设备间处理，不上传音频")
         private set
 
     val devices = mutableStateListOf(
-        BridgeDevice("pixel", "This Pixel 9", "Android", "Mix hub · system output"),
-        BridgeDevice("mac", "MacBook Air", "macOS", "LAN source · 21 ms"),
-        BridgeDevice("pc", "Gaming PC", "Windows", "Trusted · 28 ms"),
+        BridgeDevice("pixel", "本机 Pixel 9", "Android", "混音输出 · 系统路由"),
+        BridgeDevice("mac", "MacBook Air", "macOS", "局域网来源 · 21 ms"),
+        BridgeDevice("pc", "游戏电脑", "Windows", "可信设备 · 28 ms"),
     )
 
     val sources = mutableStateListOf(
-        MixerSource("mac-system", "MacBook Air · System", "Phone hotspot", 0.72f),
-        MixerSource("android-local", "This phone · Media", "Local", 0.76f),
+        MixerSource("mac-system", "MacBook Air · 系统音频", "手机热点", 0.72f),
+        MixerSource("android-local", "本机 · 媒体", "本机", 0.76f),
     )
 
     fun toggleRoute() {
         session = session.copy(running = !session.running)
-        status = if (session.running) "Route restored · best local link selected" else "Route stopped · configuration preserved"
+        status = if (session.running) "路由已恢复，正在使用最佳本地链路" else "路由已停止，配置已保留"
     }
 
     fun updateVolume(id: String, volume: Float) {
@@ -51,13 +51,13 @@ class BlueBridgeViewModel : ViewModel() {
 
     fun startPreset(preset: BuiltInPreset) {
         session = when (preset) {
-            BuiltInPreset.GamingStudy -> RouteSession("Gaming + Study", "This Pixel 9", "Gaming PC", "2.4G headset", "Standard Bluetooth", 38, true)
-            BuiltInPreset.Library -> RouteSession("Library", "MacBook Air", "This Pixel 9", "Pixel Buds Pro", "Phone hotspot", 21, true)
+            BuiltInPreset.GamingStudy -> RouteSession("游戏 + 学习", "本机 Pixel 9", "游戏电脑", "2.4G 耳机", "标准蓝牙", 38, true)
+            BuiltInPreset.Library -> RouteSession("图书馆", "MacBook Air", "本机 Pixel 9", "Pixel Buds Pro", "手机热点", 21, true)
         }
-        status = "Preset started · reconnect policy active"
+        status = "场景已启动，自动重连已开启"
     }
 
     fun scan() {
-        status = "Scanning the local network and Bluetooth…"
+        status = "正在扫描局域网和蓝牙设备…"
     }
 }

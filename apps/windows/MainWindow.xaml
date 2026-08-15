@@ -2,87 +2,119 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:models="clr-namespace:BlueBridge.Windows.Models"
-        Title="BlueBridge" Width="1180" Height="760" MinWidth="920" MinHeight="620"
-        WindowStartupLocation="CenterScreen" Background="{StaticResource Canvas}">
+        Title="BlueBridge" Width="1120" Height="760" MinWidth="900" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource Canvas}"
+        FontFamily="Microsoft YaHei UI">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="224" />
+            <ColumnDefinition Width="210" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="{StaticResource DeepTeal}">
-            <Grid Margin="20,26">
+        <Border Grid.Column="0" Background="{StaticResource Ink}">
+            <Grid Margin="22,26">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <Border Width="32" Height="32" CornerRadius="10" Background="{StaticResource Lime}">
-                        <TextBlock Text="≋" FontSize="21" Foreground="{StaticResource DeepTeal}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <TextBlock Text="BlueBridge" Margin="10,0,0,0" Foreground="White" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Text="BlueBridge" Foreground="White" FontSize="20" FontWeight="SemiBold" />
+                <StackPanel Grid.Row="1" Margin="0,34,0,0">
+                    <Button Content="音频路由" Background="White" Foreground="{StaticResource Ink}" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="设备" Background="Transparent" Foreground="#8F8F8B" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="场景" Background="Transparent" Foreground="#8F8F8B" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="设置" Background="Transparent" Foreground="#8F8F8B" HorizontalContentAlignment="Left" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Margin="0,38,0,0">
-                    <Button Content="▦   Overview" Background="{StaticResource Lime}" Foreground="{StaticResource DeepTeal}" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
-                    <Button Content="◇   Devices" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
-                    <Button Content="✦   Presets" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
-                    <Button Content="⚙   Settings" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" />
+                <StackPanel Grid.Row="3">
+                    <TextBlock Text="仅在本地处理" Foreground="White" FontSize="11" FontWeight="SemiBold" />
+                    <TextBlock Text="音频不会上传到云端" Foreground="#7A7A77" FontSize="10" Margin="0,4,0,0" />
                 </StackPanel>
-                <Border Grid.Row="3" Padding="13" CornerRadius="14" BorderBrush="#38575B" BorderThickness="1">
-                    <StackPanel><TextBlock Text="⌾  Local first" Foreground="White" FontWeight="SemiBold" /><TextBlock Text="Encrypted between your devices. Never uploaded." Margin="0,5,0,0" Foreground="#9DB3B5" FontSize="11" TextWrapping="Wrap" /></StackPanel>
-                </Border>
             </Grid>
         </Border>
 
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="32,28,34,40">
-                <DockPanel Margin="0,0,0,24">
-                    <StackPanel DockPanel.Dock="Left"><TextBlock Text="Good afternoon" FontSize="31" FontWeight="Bold" Foreground="#172125" /><TextBlock Text="{Binding Status}" Margin="0,6,0,0" Foreground="{StaticResource Muted}" FontSize="12" /></StackPanel>
-                    <Border DockPanel.Dock="Right" Background="#F9FBF8" CornerRadius="18" Padding="13,8" HorizontalAlignment="Right" VerticalAlignment="Center"><TextBlock Text="●  3 devices online" Foreground="#416B4A" FontSize="12" /></Border>
+            <StackPanel Margin="32,30,34,42">
+                <DockPanel Margin="0,0,0,22">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="音频路由" FontSize="29" FontWeight="Bold" Foreground="{StaticResource Ink}" />
+                        <TextBlock Text="{Binding Status}" Margin="0,6,0,0" Foreground="{StaticResource Muted}" FontSize="12" />
+                    </StackPanel>
+                    <Border DockPanel.Dock="Right" Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" CornerRadius="16" Padding="12,7" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal"><Ellipse Width="7" Height="7" Fill="{StaticResource Status}" Margin="0,0,7,0" /><TextBlock Text="{Binding RouteStatus}" FontSize="11" /></StackPanel>
+                    </Border>
                 </DockPanel>
 
-                <Grid>
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.5*" /><ColumnDefinition Width="18" /><ColumnDefinition Width="0.75*" /></Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" Background="{StaticResource DeepTeal}" CornerRadius="24" Padding="25">
-                        <StackPanel>
-                            <DockPanel><StackPanel><TextBlock Text="{Binding RouteStatus}" Foreground="{StaticResource Lime}" FontWeight="Bold" FontSize="11" /><TextBlock Text="{Binding RouteName}" Foreground="White" FontSize="23" FontWeight="SemiBold" Margin="0,5,0,0" /></StackPanel><Button DockPanel.Dock="Right" Content="{Binding ActionLabel}" Click="ToggleRoute_Click" Background="#294B50" Foreground="White" /></DockPanel>
-                            <Grid Margin="0,37,0,28"><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="60" /><ColumnDefinition /><ColumnDefinition Width="60" /><ColumnDefinition /></Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="#284A4F"><TextBlock Text="▯" Foreground="White" FontSize="27" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="Pixel 9" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
-                                <Border Grid.Column="1" Height="2" Background="{StaticResource Lime}" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="2" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="{StaticResource Lime}"><TextBlock Text="▰" Foreground="{StaticResource DeepTeal}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="This Windows PC" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
-                                <Border Grid.Column="3" Height="2" Background="{StaticResource Lime}" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="4" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="#284A4F"><TextBlock Text="⌾" Foreground="White" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="2.4G headset" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
-                            </Grid>
-                            <TextBlock Text="↯ 18 ms     ◎ Standard Bluetooth + local     48 kHz · 24 bit" Foreground="#B7C9CA" FontFamily="Consolas" FontSize="11" />
-                        </StackPanel>
-                    </Border>
+                <Border Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" CornerRadius="14" Padding="22">
+                    <StackPanel>
+                        <DockPanel>
+                            <StackPanel>
+                                <TextBlock Text="当前路由" Foreground="{StaticResource Muted}" FontSize="11" />
+                                <TextBlock Text="{Binding RouteName}" FontSize="20" FontWeight="SemiBold" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <Button DockPanel.Dock="Right" Content="{Binding ActionLabel}" Click="ToggleRoute_Click" Background="{StaticResource Ink}" Foreground="White" MinWidth="76" />
+                        </DockPanel>
 
-                    <Border Grid.Column="2" Background="#FBFCFA" CornerRadius="24" Padding="22">
-                        <StackPanel><TextBlock Text="Quick start" FontSize="19" FontWeight="SemiBold" /><TextBlock Text="Source → target → output" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,18" />
-                            <TextBlock Text="01  AUDIO SOURCE" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,13"><ComboBoxItem>Pixel 9 · Media</ComboBoxItem><ComboBoxItem>Local · Game</ComboBoxItem></ComboBox>
-                            <TextBlock Text="02  TARGET DEVICE" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,13"><ComboBoxItem>This Windows PC</ComboBoxItem><ComboBoxItem>Pixel 9</ComboBoxItem></ComboBox>
-                            <TextBlock Text="03  OUTPUT" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,16"><ComboBoxItem>2.4G headset</ComboBoxItem><ComboBoxItem>USB DAC</ComboBoxItem></ComboBox>
-                            <Button Content="▶  Start route" Click="StartGaming_Click" Background="{StaticResource Lime}" Foreground="{StaticResource DeepTeal}" FontWeight="Bold" />
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                        <Grid Margin="0,22,0,20">
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="36" /><ColumnDefinition /><ColumnDefinition Width="36" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="{StaticResource Canvas}" CornerRadius="9" Padding="14"><StackPanel><TextBlock Text="01  来源" Foreground="{StaticResource Muted}" FontSize="10" /><TextBlock Text="Pixel 9 · 媒体" FontWeight="SemiBold" Margin="0,5,0,0" /></StackPanel></Border>
+                            <TextBlock Grid.Column="1" Text="→" Foreground="{StaticResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Grid.Column="2" Background="{StaticResource Canvas}" CornerRadius="9" Padding="14"><StackPanel><TextBlock Text="02  目标" Foreground="{StaticResource Muted}" FontSize="10" /><TextBlock Text="本机 Windows" FontWeight="SemiBold" Margin="0,5,0,0" /></StackPanel></Border>
+                            <TextBlock Grid.Column="3" Text="→" Foreground="{StaticResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border Grid.Column="4" Background="{StaticResource Canvas}" CornerRadius="9" Padding="14"><StackPanel><TextBlock Text="03  输出" Foreground="{StaticResource Muted}" FontSize="10" /><TextBlock Text="2.4G 耳机" FontWeight="SemiBold" Margin="0,5,0,0" /></StackPanel></Border>
+                        </Grid>
 
-                <TextBlock Text="Live mixer" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
+                        <Separator Background="{StaticResource Divider}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                            <TextBlock Text="标准蓝牙" FontSize="11" Margin="0,0,26,0" />
+                            <TextBlock Text="18 ms" FontSize="11" Margin="0,0,26,0" />
+                            <TextBlock Text="48 kHz · 24 bit" FontSize="11" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" CornerRadius="14" Padding="22" Margin="0,16,0,0">
+                    <StackPanel>
+                        <TextBlock Text="新建路由" FontSize="16" FontWeight="SemiBold" />
+                        <TextBlock Text="选择来源、目标和输出设备" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,4,0,15" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="12" /><ColumnDefinition /><ColumnDefinition Width="12" /><ColumnDefinition /><ColumnDefinition Width="14" /><ColumnDefinition Width="100" /></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0"><TextBlock Text="音频来源" FontSize="10" Foreground="{StaticResource Muted}" /><ComboBox SelectedIndex="0" Margin="0,6,0,0"><ComboBoxItem>Pixel 9 · 媒体</ComboBoxItem><ComboBoxItem>本机 · 游戏</ComboBoxItem></ComboBox></StackPanel>
+                            <StackPanel Grid.Column="2"><TextBlock Text="目标设备" FontSize="10" Foreground="{StaticResource Muted}" /><ComboBox SelectedIndex="0" Margin="0,6,0,0"><ComboBoxItem>本机 Windows</ComboBoxItem><ComboBoxItem>Pixel 9</ComboBoxItem></ComboBox></StackPanel>
+                            <StackPanel Grid.Column="4"><TextBlock Text="输出设备" FontSize="10" Foreground="{StaticResource Muted}" /><ComboBox SelectedIndex="0" Margin="0,6,0,0"><ComboBoxItem>2.4G 耳机</ComboBoxItem><ComboBoxItem>USB DAC</ComboBoxItem></ComboBox></StackPanel>
+                            <Button Grid.Column="6" Content="启动" Click="StartGaming_Click" Background="{StaticResource Ink}" Foreground="White" VerticalAlignment="Bottom" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="混音" FontSize="17" FontWeight="SemiBold" Margin="0,25,0,11" />
                 <ItemsControl ItemsSource="{Binding Sources}">
-                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate><DataTemplate DataType="{x:Type models:MixerSource}"><Border Margin="0,0,12,0" Padding="16" Background="#FBFCFA" CornerRadius="17"><StackPanel><DockPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" /><CheckBox DockPanel.Dock="Right" IsChecked="{Binding IsMuted}" Content="Mute" FontSize="10" /></DockPanel><Slider Value="{Binding Volume}" Minimum="0" Maximum="100" Margin="0,11,0,6" /><TextBlock Text="{Binding Detail}" Foreground="{StaticResource Muted}" FontSize="10" /></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:MixerSource}">
+                            <Border Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" CornerRadius="10" Padding="15" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="210" /><ColumnDefinition /><ColumnDefinition Width="70" /></Grid.ColumnDefinitions>
+                                    <StackPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" /><TextBlock Text="{Binding Detail}" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,3,0,0" /></StackPanel>
+                                    <Slider Grid.Column="1" Value="{Binding Volume}" Minimum="0" Maximum="100" Margin="18,0" VerticalAlignment="Center" />
+                                    <CheckBox Grid.Column="2" IsChecked="{Binding IsMuted}" Content="静音" FontSize="10" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Text="Trusted devices" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
-                <ItemsControl ItemsSource="{Binding Devices}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,12,0" Padding="17" Background="#FBFCFA" CornerRadius="17"><StackPanel><DockPanel><TextBlock Text="◇" FontSize="22" /><TextBlock DockPanel.Dock="Right" Text="● Online" Foreground="#5F8F5B" FontSize="10" /></DockPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" Margin="0,14,0,4" /><TextBlock Text="{Binding Platform}" FontSize="10" Foreground="{StaticResource Muted}" /><TextBlock Text="{Binding Detail}" FontSize="10" Foreground="{StaticResource Muted}" /></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                <TextBlock Text="可信设备" FontSize="17" FontWeight="SemiBold" Margin="0,25,0,11" />
+                <Border Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" CornerRadius="10">
+                    <ItemsControl ItemsSource="{Binding Devices}">
+                        <ItemsControl.ItemTemplate><DataTemplate><Grid Margin="16,13"><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="130" /><ColumnDefinition Width="80" /></Grid.ColumnDefinitions><TextBlock Text="{Binding Name}" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding Detail}" Foreground="{StaticResource Muted}" FontSize="10" /><TextBlock Grid.Column="2" Text="在线" Foreground="{StaticResource Status}" FontSize="10" HorizontalAlignment="Right" /></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
 
-                <TextBlock Text="Presets" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
-                <UniformGrid Rows="1">
-                    <Button Click="StartGaming_Click" Margin="0,0,12,0" Background="{StaticResource DeepTeal}" Foreground="White" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="Gaming + Study" FontWeight="Bold" /><TextBlock Text="Phone → Windows → 2.4G headset" Foreground="#B7C9CA" FontSize="11" Margin="0,5,0,0" /></StackPanel></Button>
-                    <Button Click="StartLibrary_Click" Background="#FBFCFA" Foreground="{StaticResource DeepTeal}" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="Library" FontWeight="Bold" /><TextBlock Text="Mac → Android → Bluetooth headset" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,0" /></StackPanel></Button>
-                </UniformGrid>
+                <TextBlock Text="场景" FontSize="17" FontWeight="SemiBold" Margin="0,25,0,11" />
+                <Grid><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="10" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Click="StartGaming_Click" Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="游戏 + 学习" Foreground="{StaticResource Ink}" FontWeight="SemiBold" /><TextBlock Text="手机 → Windows → 2.4G 耳机" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,4,0,0" /></StackPanel></Button>
+                    <Button Grid.Column="2" Click="StartLibrary_Click" Background="White" BorderBrush="{StaticResource Divider}" BorderThickness="1" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="图书馆" Foreground="{StaticResource Ink}" FontWeight="SemiBold" /><TextBlock Text="Mac → Android → 蓝牙耳机" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,4,0,0" /></StackPanel></Button>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -34,21 +34,21 @@ public sealed class MixerSource : INotifyPropertyChanged
 public sealed class AppModel : INotifyPropertyChanged
 {
     private bool _isRunning = true;
-    private string _routeName = "Gaming + Study";
-    private string _status = "Local audio only — nothing is uploaded";
+    private string _routeName = "游戏 + 学习";
+    private string _status = "仅在本地设备间处理，不上传音频";
 
     public ObservableCollection<BridgeDevice> Devices { get; } =
     [
-        new("This Windows PC", "Windows 11", "Mix output · 18 ms", true),
-        new("Pixel 9", "Android", "Standard Bluetooth", true),
-        new("MacBook Air", "macOS", "LAN source · 24 ms", true),
+        new("本机 Windows", "Windows 11", "混音输出 · 18 ms", true),
+        new("Pixel 9", "Android", "标准蓝牙", true),
+        new("MacBook Air", "macOS", "局域网来源 · 24 ms", true),
     ];
 
     public ObservableCollection<MixerSource> Sources { get; } =
     [
-        new() { Name = "Local · Game", Detail = "WASAPI local path", Volume = 82 },
-        new() { Name = "Pixel 9 · Media", Detail = "Standard Bluetooth", Volume = 64 },
-        new() { Name = "Discord · Voice", Detail = "Application capture", Volume = 72 },
+        new() { Name = "本机 · 游戏", Detail = "WASAPI 本地路径", Volume = 82 },
+        new() { Name = "Pixel 9 · 媒体", Detail = "标准蓝牙", Volume = 64 },
+        new() { Name = "Discord · 语音", Detail = "应用捕获", Volume = 72 },
     ];
 
     public bool IsRunning
@@ -69,27 +69,27 @@ public sealed class AppModel : INotifyPropertyChanged
         set { _status = value; OnPropertyChanged(); }
     }
 
-    public string RouteStatus => IsRunning ? "LIVE ROUTE" : "PAUSED";
-    public string ActionLabel => IsRunning ? "Stop" : "Resume";
+    public string RouteStatus => IsRunning ? "运行中" : "已暂停";
+    public string ActionLabel => IsRunning ? "停止" : "恢复";
 
     public void ToggleRoute()
     {
         IsRunning = !IsRunning;
-        Status = IsRunning ? "Route restored · best local link selected" : "Route stopped · configuration preserved";
+        Status = IsRunning ? "路由已恢复，正在使用最佳本地链路" : "路由已停止，配置已保留";
     }
 
     public void StartGamingStudy()
     {
-        RouteName = "Gaming + Study";
+        RouteName = "游戏 + 学习";
         IsRunning = true;
-        Status = "Phone → standard Bluetooth → Windows → 2.4G headset";
+        Status = "手机 → 标准蓝牙 → Windows → 2.4G 耳机";
     }
 
     public void StartLibrary()
     {
-        RouteName = "Library";
+        RouteName = "图书馆";
         IsRunning = true;
-        Status = "Mac → local network → Android → Bluetooth headset";
+        Status = "Mac → 局域网 → Android → 蓝牙耳机";
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

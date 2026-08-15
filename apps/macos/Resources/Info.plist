@@ -17,15 +17,15 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.1.0</string>
+    <string>0.2.0</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSScreenCaptureUsageDescription</key>
-    <string>BlueBridge needs Screen &amp; System Audio Recording permission to route Mac system audio to your selected output.</string>
+    <string>BlueBridge 需要“屏幕与系统音频录制”权限，才能将 Mac 系统音频发送到所选输出设备。</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
 </dict>

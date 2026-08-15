@@ -14,23 +14,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "BlueBridge — One headset. Every device.",
+    default: "BlueBridge｜跨设备音频路由",
     template: "%s · BlueBridge",
   },
   description:
     "跨 Windows、macOS 与 Android 的个人音频路由控制中心。所有音频留在本地。",
   applicationName: "BlueBridge",
   openGraph: {
-    title: "BlueBridge — One headset. Every device.",
-    description: "One headset. Every device. 让每台设备的声音，在一副耳机里相遇。",
+    title: "BlueBridge｜跨设备音频路由",
+    description: "来源、目标、输出和状态，集中显示。",
     type: "website",
-    images: [{ url: "/og.png", width: 1536, height: 1024 }],
+    images: [{ url: "/og-minimal.png", width: 1536, height: 1024 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BlueBridge — One headset. Every device.",
-    description: "跨平台个人音频路由器，让每台设备的声音在一副耳机里相遇。",
-    images: ["/og.png"],
+    title: "BlueBridge｜跨设备音频路由",
+    description: "来源、目标、输出和状态，集中显示。",
+    images: ["/og-minimal.png"],
   },
 };
 

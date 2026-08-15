@@ -23,7 +23,7 @@ The repository now contains the three native application shells and a tested sha
 
 ## Download the first real build
 
-- [BlueBridge for macOS v0.1.0](releases/BlueBridge-macOS-v0.1.0.zip) — Apple silicon, macOS 14+
+- [BlueBridge for macOS v0.2.0](releases/BlueBridge-macOS-v0.2.0.zip) — Apple silicon, macOS 14+
 
 This build contains no simulated devices or connection state. It reads real CoreAudio outputs and routes real macOS system audio using ScreenCaptureKit and AVAudioEngine. LAN and Bluetooth routing are not enabled yet.
 

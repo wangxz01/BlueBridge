@@ -3,14 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="DeepTeal" Color="#123439" />
-        <SolidColorBrush x:Key="Lime" Color="#D9FF75" />
-        <SolidColorBrush x:Key="Canvas" Color="#EEF1EC" />
-        <SolidColorBrush x:Key="Muted" Color="#6D797D" />
+        <SolidColorBrush x:Key="Ink" Color="#171717" />
+        <SolidColorBrush x:Key="Canvas" Color="#F4F4F2" />
+        <SolidColorBrush x:Key="Muted" Color="#6B6B67" />
+        <SolidColorBrush x:Key="Divider" Color="#DDDDD8" />
+        <SolidColorBrush x:Key="Status" Color="#2E7D4F" />
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Padding" Value="14,9" />
             <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
         </Style>
     </Application.Resources>
 </Application>

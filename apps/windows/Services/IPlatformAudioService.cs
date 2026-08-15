@@ -15,10 +15,10 @@ public interface IPlatformAudioService
 public sealed class DevelopmentAudioService : IPlatformAudioService
 {
     public Task<IReadOnlyList<string>> ListSystemSourcesAsync(CancellationToken cancellationToken) =>
-        Task.FromResult<IReadOnlyList<string>>(["System audio", "Game", "Discord"]);
+        Task.FromResult<IReadOnlyList<string>>(["系统音频", "游戏", "Discord"]);
 
     public Task<IReadOnlyList<string>> ListOutputDevicesAsync(CancellationToken cancellationToken) =>
-        Task.FromResult<IReadOnlyList<string>>(["System default", "2.4G headset", "USB DAC"]);
+        Task.FromResult<IReadOnlyList<string>>(["系统默认", "2.4G 耳机", "USB DAC"]);
 
     public Task StartRouteAsync(string routeId, CancellationToken cancellationToken) => Task.CompletedTask;
     public Task StopRouteAsync(CancellationToken cancellationToken) => Task.CompletedTask;

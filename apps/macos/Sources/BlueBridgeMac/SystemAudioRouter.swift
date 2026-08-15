@@ -15,11 +15,11 @@ enum RouterState: Equatable {
 
     var label: String {
         switch self {
-        case .idle: return "Ready"
-        case .requestingPermission: return "Permission required"
-        case .starting: return "Starting audio route…"
-        case .running: return "Routing system audio"
-        case .stopping: return "Stopping…"
+        case .idle: return "可以启动"
+        case .requestingPermission: return "需要系统权限"
+        case .starting: return "正在启动"
+        case .running: return "路由运行中"
+        case .stopping: return "正在停止"
         case .failed(let message): return message
         }
     }
@@ -197,15 +197,15 @@ enum RouterError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .permissionRequired:
-            return "Allow Screen & System Audio Recording in System Settings, then reopen BlueBridge."
+            return "请在系统设置中允许“屏幕与系统音频录制”，然后重新打开 BlueBridge。"
         case .noDisplay:
-            return "No active display is available for system-audio capture."
+            return "未找到可用于系统音频捕获的显示器。"
         case .invalidAudioFormat:
-            return "BlueBridge could not create the 48 kHz stereo route."
+            return "无法创建 48 kHz 立体声音频路由。"
         case .outputUnavailable:
-            return "The selected audio output is unavailable."
+            return "所选音频输出当前不可用。"
         case .outputSelectionFailed(let status):
-            return "CoreAudio could not select this output (\(status))."
+            return "CoreAudio 无法选择此输出（\(status)）。"
         }
     }
 }

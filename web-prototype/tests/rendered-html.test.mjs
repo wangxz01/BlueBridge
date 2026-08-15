@@ -21,9 +21,9 @@ test("server-renders the BlueBridge control center", async () => {
 
   const html = await response.text();
   assert.match(html, /BlueBridge/);
-  assert.match(html, /Gaming \+ Study/);
-  assert.match(html, /One headset\. Every device\./);
-  assert.match(html, /创建新路由/);
+  assert.match(html, /游戏 \+ 学习/);
+  assert.match(html, /跨设备音频路由/);
+  assert.match(html, /新建路由/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
@@ -36,8 +36,7 @@ test("ships the product UI without starter dependencies", async () => {
   ]);
 
   assert.match(page, /BlueBridgeApp/);
-  assert.match(layout, /og\.png/);
-  assert.match(app, /bluebridge-language/);
+  assert.match(layout, /og-minimal\.png/);
   assert.match(app, /aria-pressed/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page + layout, /codex-preview|_sites-preview/);

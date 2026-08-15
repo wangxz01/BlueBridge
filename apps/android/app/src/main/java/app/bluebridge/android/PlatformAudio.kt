@@ -16,7 +16,7 @@ interface PlatformAudio {
  * AudioTrack while following Android's current system output route.
  */
 class DevelopmentPlatformAudio : PlatformAudio {
-    override suspend fun listOutputs() = listOf("System route", "Bluetooth headset", "USB-C audio")
+    override suspend fun listOutputs() = listOf("系统路由", "蓝牙耳机", "USB-C 音频")
     override suspend fun startPlaybackCapture(mediaProjection: MediaProjection) = Unit
     override suspend fun startSink(routeId: String) = Unit
     override suspend fun stop() = Unit
