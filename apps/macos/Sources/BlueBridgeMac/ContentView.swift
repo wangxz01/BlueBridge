@@ -2,191 +2,218 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var model: AppModel
-    @State private var selection = "Overview"
-
-    private let navigation = ["Overview", "Devices", "Presets", "Settings"]
 
     var body: some View {
         NavigationSplitView {
-            VStack(alignment: .leading, spacing: 22) {
-                Label("BlueBridge", systemImage: "wave.3.right.circle.fill")
-                    .font(.title2.bold())
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 10)
-
-                ForEach(navigation, id: \.self) { item in
-                    Button {
-                        selection = item
-                    } label: {
-                        HStack {
-                            Image(systemName: icon(for: item))
-                            Text(item)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 12)
-                        .frame(height: 42)
-                        .background(selection == item ? Color.lime : .clear, in: RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(selection == item ? Color.deepTeal : .white.opacity(0.72))
-                    }
-                    .buttonStyle(.plain)
-                }
-
-                Spacer()
-                Label("Local-first · encrypted", systemImage: "lock.shield")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.58))
-                    .padding(12)
-            }
-            .padding(18)
-            .background(Color.deepTeal)
+            sidebar
         } detail: {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     header
-                    if selection == "Overview" { overview }
-                    else if selection == "Devices" { devices }
-                    else if selection == "Presets" { presets }
-                    else { settings }
+                    routeCard
+                    setupCard
+                    outputDevices
+                    nextCapabilities
                 }
                 .padding(30)
             }
-            .background(Color(red: 0.94, green: 0.95, blue: 0.92))
+            .background(Color.canvas)
         }
         .navigationSplitViewStyle(.balanced)
+    }
+
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            Label("BlueBridge", systemImage: "wave.3.right.circle.fill")
+                .font(.title2.bold())
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10)
+
+            Label("Audio route", systemImage: "point.3.connected.trianglepath.dotted")
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                .background(Color.lime, in: RoundedRectangle(cornerRadius: 12))
+                .foregroundStyle(Color.deepTeal)
+
+            Spacer()
+            VStack(alignment: .leading, spacing: 6) {
+                Label("Local only", systemImage: "lock.shield")
+                    .font(.caption.bold())
+                    .foregroundStyle(.white)
+                Text("This build captures and plays audio entirely on this Mac.")
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.58))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(12)
+        }
+        .padding(18)
+        .background(Color.deepTeal)
     }
 
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(selection).font(.system(size: 30, weight: .bold, design: .rounded))
-                Text(model.statusMessage).font(.caption).foregroundStyle(.secondary)
+                Text("System audio route")
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                Text(model.localDeviceName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             Spacer()
-            Label("\(model.devices.filter(\.isOnline).count) devices online", systemImage: "circle.fill")
+            Label(model.routerState.label, systemImage: model.isRunning ? "waveform.circle.fill" : "circle")
                 .font(.caption)
-                .foregroundStyle(Color.deepTeal)
-                .padding(.horizontal, 13).padding(.vertical, 9)
-                .background(.white.opacity(0.75), in: Capsule())
-        }
-    }
-
-    private var overview: some View {
-        VStack(spacing: 20) {
-            routeCard
-            mixer
-            devices
-            presets
+                .foregroundStyle(model.isRunning ? .green : Color.deepTeal)
+                .padding(.horizontal, 13)
+                .padding(.vertical, 9)
+                .background(.white.opacity(0.78), in: Capsule())
         }
     }
 
     private var routeCard: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 25) {
             HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(model.session.isRunning ? "LIVE ROUTE" : "PAUSED").font(.caption2.bold()).foregroundStyle(Color.lime)
-                    Text(model.session.name).font(.title2.bold())
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(model.isRunning ? "LIVE AUDIO" : "LOCAL ROUTE")
+                        .font(.caption2.bold())
+                        .foregroundStyle(Color.lime)
+                    Text("Mac system audio")
+                        .font(.title2.bold())
                 }
                 Spacer()
-                Button(model.session.isRunning ? "Stop" : "Resume") {
-                    model.session.isRunning ? model.stop() : model.startPreset(.library)
-                }
-                .buttonStyle(.bordered)
-                .tint(.white)
+                Button(model.isRunning ? "Stop" : "Start") { model.toggleRoute() }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Color.lime)
+                    .foregroundStyle(Color.deepTeal)
+                    .disabled(!model.canStart)
             }
-            HStack {
-                routeNode("laptopcomputer", model.session.source, "Source")
-                routeLine
-                routeNode("iphone", model.session.sink, "Mix hub")
-                routeLine
-                routeNode("headphones", model.session.output, "Output")
+
+            HStack(spacing: 16) {
+                routeNode(icon: "laptopcomputer", title: model.localDeviceName, detail: "System audio")
+                Capsule().fill(Color.lime).frame(height: 2)
+                routeNode(icon: "headphones", title: model.selectedOutput?.name ?? "No output", detail: "CoreAudio output")
             }
-            Label("\(model.session.link.rawValue) · 18 ms · 48 kHz", systemImage: "bolt.fill")
-                .font(.caption.monospaced()).foregroundStyle(.white.opacity(0.68))
+
+            Label("48 kHz · stereo · current process excluded", systemImage: "waveform")
+                .font(.caption.monospaced())
+                .foregroundStyle(.white.opacity(0.66))
         }
-        .padding(24)
+        .padding(25)
         .foregroundStyle(.white)
         .background(Color.deepTeal.gradient, in: RoundedRectangle(cornerRadius: 24))
     }
 
-    private func routeNode(_ icon: String, _ title: String, _ detail: String) -> some View {
-        VStack(spacing: 7) {
-            Image(systemName: icon).font(.title2).frame(width: 56, height: 56).background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 17))
-            Text(title).font(.caption.bold()).lineLimit(1)
-            Text(detail).font(.caption2).foregroundStyle(.white.opacity(0.55))
-        }.frame(maxWidth: .infinity)
+    private func routeNode(icon: String, title: String, detail: String) -> some View {
+        HStack(spacing: 13) {
+            Image(systemName: icon)
+                .font(.title2)
+                .frame(width: 54, height: 54)
+                .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(.caption.bold()).lineLimit(1)
+                Text(detail).font(.caption2).foregroundStyle(.white.opacity(0.55))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var routeLine: some View {
-        Capsule().fill(Color.lime).frame(width: 45, height: 2)
-    }
-
-    private var mixer: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Live mixer").font(.headline)
-            HStack(spacing: 12) {
-                ForEach($model.sources) { $source in
-                    VStack(alignment: .leading, spacing: 9) {
-                        HStack { Text(source.name).font(.caption.bold()); Spacer(); Button { source.isMuted.toggle() } label: { Image(systemName: source.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill") }.buttonStyle(.plain) }
-                        Slider(value: $source.volume, in: 0...1).tint(Color.deepTeal)
-                        Text(source.detail).font(.caption2).foregroundStyle(.secondary)
+    private var setupCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Route setup").font(.headline)
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Source").font(.caption2.bold()).foregroundStyle(.secondary)
+                    Label("macOS system audio", systemImage: "waveform")
+                }
+                Spacer()
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Output").font(.caption2.bold()).foregroundStyle(.secondary)
+                    Picker("Output", selection: $model.selectedOutputID) {
+                        ForEach(model.outputs) { device in
+                            Text(device.isDefault ? "\(device.name) — Default" : device.name)
+                                .tag(Optional(device.id))
+                        }
                     }
-                    .padding(16).background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 18))
+                    .labelsHidden()
+                    .frame(width: 260)
+                    .disabled(model.isRunning)
+                }
+                Button { model.refreshOutputs() } label: { Image(systemName: "arrow.clockwise") }
+                    .help("Refresh real CoreAudio outputs")
+                    .disabled(model.isRunning)
+            }
+
+            if let error = model.lastError {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(error).font(.caption)
+                        if model.routerState == .requestingPermission || error.contains("Screen") {
+                            Button("Open Privacy Settings") { model.openPrivacySettings() }
+                                .font(.caption)
+                        }
+                    }
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.orange.opacity(0.10), in: RoundedRectangle(cornerRadius: 12))
+            }
+        }
+        .padding(21)
+        .background(.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var outputDevices: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Real audio outputs").font(.headline)
+                    Text("Read directly from CoreAudio on this Mac").font(.caption2).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text("\(model.outputs.count) found").font(.caption).foregroundStyle(.secondary)
+            }
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 210), spacing: 12)], spacing: 12) {
+                ForEach(model.outputs) { device in
+                    HStack(spacing: 12) {
+                        Image(systemName: device.isDefault ? "speaker.wave.3.fill" : "speaker.wave.2")
+                            .foregroundStyle(Color.deepTeal)
+                            .frame(width: 42, height: 42)
+                            .background(Color.teal.opacity(0.09), in: RoundedRectangle(cornerRadius: 13))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(device.name).font(.caption.bold()).lineLimit(1)
+                            Text(device.isDefault ? "System default" : "Available")
+                                .font(.caption2).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if device.id == model.selectedOutputID {
+                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                        }
+                    }
+                    .padding(14)
+                    .background(.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 17))
                 }
             }
         }
     }
 
-    private var devices: some View {
+    private var nextCapabilities: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack { Text("Trusted devices").font(.headline); Spacer(); Button("Scan") { model.scan() } }
-            HStack(spacing: 12) {
-                ForEach(model.devices) { device in
-                    VStack(alignment: .leading, spacing: 9) {
-                        HStack { Image(systemName: device.platform == .android ? "iphone" : "desktopcomputer"); Spacer(); Circle().fill(device.isOnline ? .green : .gray).frame(width: 7, height: 7) }
-                        Text(device.name).font(.caption.bold())
-                        Text("\(device.platform.rawValue) · \(device.latencyMs ?? 0) ms").font(.caption2).foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16).background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 18))
-                }
-            }
+            Text("Not in this build").font(.headline)
+            Text("LAN device discovery, remote audio transport, app-by-app capture and BlueBridge Bluetooth are disabled until their native engines are implemented. No placeholder devices or fake connection state are shown.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private var presets: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Presets").font(.headline)
-            HStack(spacing: 12) {
-                preset("Gaming + Study", "Phone → Windows → 2.4G", .gamingStudy)
-                preset("Library", "Mac → Android → headphones", .library)
-            }
-        }
-    }
-
-    private func preset(_ title: String, _ route: String, _ preset: BuiltInPreset) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 5) { Text(title).font(.caption.bold()); Text(route).font(.caption2).foregroundStyle(.secondary) }
-            Spacer(); Button { model.startPreset(preset) } label: { Image(systemName: "play.fill") }
-        }
-        .padding(16).frame(maxWidth: .infinity).background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 18))
-    }
-
-    private var settings: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Connection & recovery").font(.headline)
-            Toggle("Reconnect trusted devices automatically", isOn: .constant(true))
-            Toggle("Prefer the best local link", isOn: .constant(true))
-            Toggle("Prevent BlueBridge audio feedback", isOn: .constant(true))
-        }
-        .padding(22).background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 20))
-    }
-
-    private func icon(for item: String) -> String {
-        ["Overview": "rectangle.grid.2x2", "Devices": "display.2", "Presets": "sparkles", "Settings": "gearshape"][item] ?? "circle"
+        .padding(21)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 20))
     }
 }
 
 extension Color {
     static let deepTeal = Color(red: 0.07, green: 0.20, blue: 0.22)
     static let lime = Color(red: 0.85, green: 1.0, blue: 0.46)
+    static let canvas = Color(red: 0.94, green: 0.95, blue: 0.92)
 }

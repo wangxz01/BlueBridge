@@ -13,7 +13,9 @@ This document is the source of truth for what the repository currently does.
 | Encrypted realtime audio transport | Not yet implemented |
 | Windows WASAPI capture and mixing | Not yet implemented |
 | Windows standard A2DP Receiver | Not yet implemented |
-| macOS system/application capture | Not yet implemented |
+| macOS system audio capture | Implemented in v0.1 with ScreenCaptureKit |
+| macOS CoreAudio output discovery and local render | Implemented in v0.1 |
+| macOS per-application capture | Not yet implemented |
 | Android playback capture and final mixing | Not yet implemented |
 | BlueBridge Bluetooth media transport | Not yet implemented |
 

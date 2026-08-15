@@ -21,6 +21,12 @@ web-prototype/    UI reference only; not the product runtime
 
 The repository now contains the three native application shells and a tested shared domain core. Each app presents the same product concepts: devices, routes, mixer channels, presets, trusted pairing, and automatic recovery.
 
+## Download the first real build
+
+- [BlueBridge for macOS v0.1.0](releases/BlueBridge-macOS-v0.1.0.zip) — Apple silicon, macOS 14+
+
+This build contains no simulated devices or connection state. It reads real CoreAudio outputs and routes real macOS system audio using ScreenCaptureKit and AVAudioEngine. LAN and Bluetooth routing are not enabled yet.
+
 Platform audio drivers, encrypted realtime transport, discovery, standard Windows A2DP Sink, and production Bluetooth transports remain native integration work. See [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) for the exact boundary.
 
 ## Validate the shared core

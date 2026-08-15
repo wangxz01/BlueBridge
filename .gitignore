@@ -50,3 +50,4 @@ dist/
 DerivedData/
 .idea/
 local.properties
+/artifacts/
