@@ -1,0 +1,16 @@
+<Application x:Class="BlueBridge.Windows.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="DeepTeal" Color="#123439" />
+        <SolidColorBrush x:Key="Lime" Color="#D9FF75" />
+        <SolidColorBrush x:Key="Canvas" Color="#EEF1EC" />
+        <SolidColorBrush x:Key="Muted" Color="#6D797D" />
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="14,9" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Application.Resources>
+</Application>

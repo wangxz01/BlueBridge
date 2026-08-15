@@ -1,16 +1,38 @@
 # BlueBridge
 
-BlueBridge is a control-center prototype for a cross-platform personal audio router across Windows, macOS, and Android.
+**One headset. Every device.**
 
-The interface implements the product's core three-step flow—choose a source, choose a target, and start—along with live route status, per-source mixing, trusted devices, presets, local preferences, and Chinese/English UI.
+BlueBridge is a local-first personal audio router for Windows, macOS, and Android. The product is three native applications backed by one shared routing model—not a website.
 
-## Run locally
+## Repository layout
 
-```bash
-npm install
-npm run dev
+```text
+apps/
+  windows/        Windows desktop app (WPF/.NET)
+  macos/          macOS app (SwiftUI)
+  android/        Android app (Kotlin/Compose)
+shared/
+  bluebridge-core Shared route, device, trust, preset and recovery model (Rust)
+docs/             Architecture and implementation status
+web-prototype/    UI reference only; not the product runtime
 ```
 
-## Scope
+## Current milestone
 
-This repository currently contains the interactive control layer. System-audio capture, virtual audio devices, A2DP Sink support, encrypted transport, and native background services require platform-specific Windows, macOS, and Android clients.
+The repository now contains the three native application shells and a tested shared domain core. Each app presents the same product concepts: devices, routes, mixer channels, presets, trusted pairing, and automatic recovery.
+
+Platform audio drivers, encrypted realtime transport, discovery, standard Windows A2DP Sink, and production Bluetooth transports remain native integration work. See [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) for the exact boundary.
+
+## Validate the shared core
+
+```bash
+cargo test --workspace
+```
+
+The macOS shell can also be compiled on macOS:
+
+```bash
+swift build --package-path apps/macos
+```
+
+The previous web control-center prototype remains runnable from `web-prototype/` as a visual reference.

@@ -1,0 +1,11 @@
+[package]
+name = "bluebridge-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Shared domain and route validation core for BlueBridge"
+
+[lib]
+crate-type = ["rlib", "staticlib", "cdylib"]
+
+[dependencies]

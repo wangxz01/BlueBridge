@@ -1,0 +1,89 @@
+<Window x:Class="BlueBridge.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:BlueBridge.Windows.Models"
+        Title="BlueBridge" Width="1180" Height="760" MinWidth="920" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource Canvas}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="224" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{StaticResource DeepTeal}">
+            <Grid Margin="20,26">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="32" Height="32" CornerRadius="10" Background="{StaticResource Lime}">
+                        <TextBlock Text="≋" FontSize="21" Foreground="{StaticResource DeepTeal}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="BlueBridge" Margin="10,0,0,0" Foreground="White" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,38,0,0">
+                    <Button Content="▦   Overview" Background="{StaticResource Lime}" Foreground="{StaticResource DeepTeal}" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="◇   Devices" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="✦   Presets" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" Margin="0,0,0,7" />
+                    <Button Content="⚙   Settings" Background="Transparent" Foreground="#B5C8C9" HorizontalContentAlignment="Left" />
+                </StackPanel>
+                <Border Grid.Row="3" Padding="13" CornerRadius="14" BorderBrush="#38575B" BorderThickness="1">
+                    <StackPanel><TextBlock Text="⌾  Local first" Foreground="White" FontWeight="SemiBold" /><TextBlock Text="Encrypted between your devices. Never uploaded." Margin="0,5,0,0" Foreground="#9DB3B5" FontSize="11" TextWrapping="Wrap" /></StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="32,28,34,40">
+                <DockPanel Margin="0,0,0,24">
+                    <StackPanel DockPanel.Dock="Left"><TextBlock Text="Good afternoon" FontSize="31" FontWeight="Bold" Foreground="#172125" /><TextBlock Text="{Binding Status}" Margin="0,6,0,0" Foreground="{StaticResource Muted}" FontSize="12" /></StackPanel>
+                    <Border DockPanel.Dock="Right" Background="#F9FBF8" CornerRadius="18" Padding="13,8" HorizontalAlignment="Right" VerticalAlignment="Center"><TextBlock Text="●  3 devices online" Foreground="#416B4A" FontSize="12" /></Border>
+                </DockPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.5*" /><ColumnDefinition Width="18" /><ColumnDefinition Width="0.75*" /></Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="{StaticResource DeepTeal}" CornerRadius="24" Padding="25">
+                        <StackPanel>
+                            <DockPanel><StackPanel><TextBlock Text="{Binding RouteStatus}" Foreground="{StaticResource Lime}" FontWeight="Bold" FontSize="11" /><TextBlock Text="{Binding RouteName}" Foreground="White" FontSize="23" FontWeight="SemiBold" Margin="0,5,0,0" /></StackPanel><Button DockPanel.Dock="Right" Content="{Binding ActionLabel}" Click="ToggleRoute_Click" Background="#294B50" Foreground="White" /></DockPanel>
+                            <Grid Margin="0,37,0,28"><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="60" /><ColumnDefinition /><ColumnDefinition Width="60" /><ColumnDefinition /></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="#284A4F"><TextBlock Text="▯" Foreground="White" FontSize="27" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="Pixel 9" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
+                                <Border Grid.Column="1" Height="2" Background="{StaticResource Lime}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="{StaticResource Lime}"><TextBlock Text="▰" Foreground="{StaticResource DeepTeal}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="This Windows PC" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
+                                <Border Grid.Column="3" Height="2" Background="{StaticResource Lime}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="4" HorizontalAlignment="Center"><Border Width="62" Height="62" CornerRadius="18" Background="#284A4F"><TextBlock Text="⌾" Foreground="White" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="2.4G headset" Foreground="White" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,0" /></StackPanel>
+                            </Grid>
+                            <TextBlock Text="↯ 18 ms     ◎ Standard Bluetooth + local     48 kHz · 24 bit" Foreground="#B7C9CA" FontFamily="Consolas" FontSize="11" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#FBFCFA" CornerRadius="24" Padding="22">
+                        <StackPanel><TextBlock Text="Quick start" FontSize="19" FontWeight="SemiBold" /><TextBlock Text="Source → target → output" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,18" />
+                            <TextBlock Text="01  AUDIO SOURCE" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,13"><ComboBoxItem>Pixel 9 · Media</ComboBoxItem><ComboBoxItem>Local · Game</ComboBoxItem></ComboBox>
+                            <TextBlock Text="02  TARGET DEVICE" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,13"><ComboBoxItem>This Windows PC</ComboBoxItem><ComboBoxItem>Pixel 9</ComboBoxItem></ComboBox>
+                            <TextBlock Text="03  OUTPUT" FontSize="10" Foreground="{StaticResource Muted}" FontWeight="Bold" /><ComboBox SelectedIndex="0" Margin="0,6,0,16"><ComboBoxItem>2.4G headset</ComboBoxItem><ComboBoxItem>USB DAC</ComboBoxItem></ComboBox>
+                            <Button Content="▶  Start route" Click="StartGaming_Click" Background="{StaticResource Lime}" Foreground="{StaticResource DeepTeal}" FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <TextBlock Text="Live mixer" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
+                <ItemsControl ItemsSource="{Binding Sources}">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate><DataTemplate DataType="{x:Type models:MixerSource}"><Border Margin="0,0,12,0" Padding="16" Background="#FBFCFA" CornerRadius="17"><StackPanel><DockPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" /><CheckBox DockPanel.Dock="Right" IsChecked="{Binding IsMuted}" Content="Mute" FontSize="10" /></DockPanel><Slider Value="{Binding Volume}" Minimum="0" Maximum="100" Margin="0,11,0,6" /><TextBlock Text="{Binding Detail}" Foreground="{StaticResource Muted}" FontSize="10" /></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Trusted devices" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
+                <ItemsControl ItemsSource="{Binding Devices}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,12,0" Padding="17" Background="#FBFCFA" CornerRadius="17"><StackPanel><DockPanel><TextBlock Text="◇" FontSize="22" /><TextBlock DockPanel.Dock="Right" Text="● Online" Foreground="#5F8F5B" FontSize="10" /></DockPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" Margin="0,14,0,4" /><TextBlock Text="{Binding Platform}" FontSize="10" Foreground="{StaticResource Muted}" /><TextBlock Text="{Binding Detail}" FontSize="10" Foreground="{StaticResource Muted}" /></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+
+                <TextBlock Text="Presets" FontSize="19" FontWeight="SemiBold" Margin="0,27,0,12" />
+                <UniformGrid Rows="1">
+                    <Button Click="StartGaming_Click" Margin="0,0,12,0" Background="{StaticResource DeepTeal}" Foreground="White" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="Gaming + Study" FontWeight="Bold" /><TextBlock Text="Phone → Windows → 2.4G headset" Foreground="#B7C9CA" FontSize="11" Margin="0,5,0,0" /></StackPanel></Button>
+                    <Button Click="StartLibrary_Click" Background="#FBFCFA" Foreground="{StaticResource DeepTeal}" HorizontalContentAlignment="Left"><StackPanel><TextBlock Text="Library" FontWeight="Bold" /><TextBlock Text="Mac → Android → Bluetooth headset" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,0" /></StackPanel></Button>
+                </UniformGrid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
