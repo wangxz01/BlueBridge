@@ -10,6 +10,8 @@
     <string>BlueBridgeMac</string>
     <key>CFBundleIdentifier</key>
     <string>app.bluebridge.macos</string>
+    <key>CFBundleIconFile</key>
+    <string>BlueBridge</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>

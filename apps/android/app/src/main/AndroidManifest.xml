@@ -11,7 +11,9 @@
 
     <application
         android:allowBackup="false"
+        android:icon="@drawable/bluebridge_logo"
         android:label="BlueBridge"
+        android:roundIcon="@drawable/bluebridge_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueBridge">
         <activity

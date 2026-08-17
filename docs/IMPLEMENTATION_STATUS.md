@@ -1,22 +1,22 @@
-# Implementation status
+# 实现状态
 
-This document is the source of truth for what the repository currently does.
+本文档是仓库当前能力边界的事实来源。未完成的能力不会以模拟状态冒充真实实现。
 
-| Capability | Status |
+| 能力 | 状态 |
 |---|---|
-| Windows, macOS, Android application projects | Application shells implemented |
-| Shared device, trust, route and preset model | Implemented and tested |
-| Route validation and audio-loop rejection | Implemented in shared core |
-| Link preference and reconnect backoff | Implemented in shared core |
-| Product UI and bilingual copy reference | Available in each shell; fuller reference in `web-prototype/` |
-| LAN discovery | Adapter contract only |
-| Encrypted realtime audio transport | Not yet implemented |
-| Windows WASAPI capture and mixing | Not yet implemented |
-| Windows standard A2DP Receiver | Not yet implemented |
-| macOS system audio capture | Implemented in v0.1 with ScreenCaptureKit |
-| macOS CoreAudio output discovery and local render | Implemented in v0.1 |
-| macOS per-application capture | Not yet implemented |
-| Android playback capture and final mixing | Not yet implemented |
-| BlueBridge Bluetooth media transport | Not yet implemented |
+| Windows、macOS、Android 三个原生应用工程 | 已完成应用骨架与统一中文界面 |
+| 共享设备、信任、路由和预设模型 | 已实现并通过测试 |
+| 路由校验与音频环路阻止 | 已在共享核心实现 |
+| 链路偏好与重连退避 | 已在共享核心实现 |
+| macOS 系统音频采集 | v0.2 已通过 ScreenCaptureKit 实现 |
+| macOS CoreAudio 输出发现与本机播放 | v0.2 已实现 |
+| macOS 逐应用采集 | 未实现 |
+| 局域网发现 | 仅有适配器契约，未实现 |
+| 加密实时音频传输 | 未实现 |
+| Windows WASAPI 采集与混音 | 未实现 |
+| Windows 标准 A2DP Receiver | 未实现 |
+| Android 播放捕获与最终混音 | 未实现 |
+| BlueBridge Bluetooth 媒体传输 | 未实现 |
+| 三端签名、安装器与自动更新 | 未实现 |
 
-The website is not part of the runtime product and cannot satisfy any system-audio acceptance criterion.
+`web-prototype/` 只是 UI 参考，不属于运行时产品，也不能满足任何系统音频验收条件。

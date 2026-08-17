@@ -17,11 +17,13 @@ fi
 mkdir -p "$APP_PATH/Contents/MacOS" "$APP_PATH/Contents/Resources"
 cp "$EXECUTABLE_PATH" "$APP_PATH/Contents/MacOS/BlueBridgeMac"
 cp "$PROJECT_DIR/Resources/Info.plist" "$APP_PATH/Contents/Info.plist"
+cp "$PROJECT_DIR/Resources/BlueBridge.icns" "$APP_PATH/Contents/Resources/BlueBridge.icns"
 chmod 755 "$APP_PATH/Contents/MacOS/BlueBridgeMac"
 
 xattr -cr "$APP_PATH"
 codesign --force --deep --sign - "$APP_PATH"
-ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$ZIP_PATH"
+codesign --verify --deep --strict "$APP_PATH"
+COPYFILE_DISABLE=1 ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
 
 echo "$APP_PATH"
 echo "$ZIP_PATH"
