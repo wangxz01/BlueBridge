@@ -1,36 +1,52 @@
-# BlueBridge architecture
+# BlueBridge 目标架构
 
-BlueBridge is three native applications connected by a shared local protocol and domain model.
+BlueBridge 采用“统一跨平台前台 + 原生音频插件 + Rust 共享核心”。跨平台并不意味着用 Dart 重写系统音频驱动；Dart 负责界面和业务编排，平台 API 留在最适合它们的原生层。
 
 ```text
-Windows app ─┐
-macOS app  ──┼── discovery / trust / encrypted audio transport ── route sink + mixer
-Android app ─┘
+┌──────────────────────────────────────────────┐
+│ Flutter / Dart                               │
+│ 中文 UI · 状态展示 · 路由编排 · 生命周期       │
+└──────────────────────┬───────────────────────┘
+                       │ 类型化平台网关
+       ┌───────────────┼───────────────┐
+       │               │               │
+┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
+│ Windows 插件 │ │ macOS 插件   │ │ Android 插件 │
+│ C++ / WASAPI│ │ Swift / SCK  │ │ Kotlin / MP │
+└──────┬──────┘ └──────┬──────┘ └──────┬──────┘
+       └───────────────┼───────────────┘
+                       │ C ABI / Dart FFI
+┌──────────────────────▼───────────────────────┐
+│ Rust 共享核心                                │
+│ 设备 · 信任 · 路由校验 · 环路保护 · 恢复 · 传输 │
+└──────────────────────────────────────────────┘
 ```
 
-## Layers
+## 分层边界
 
-1. **Native UI** — WPF on Windows, SwiftUI on macOS, and Jetpack Compose on Android.
-2. **Platform audio adapter** — WASAPI and Windows Bluetooth APIs; CoreAudio/ScreenCaptureKit; AudioPlaybackCapture/MediaProjection and Android AudioTrack.
-3. **Shared route core** — device identity, trust, route validation, presets, link selection, loop prevention, and recovery state.
-4. **Transport** — encrypted LAN audio sessions with local discovery; BlueBridge Bluetooth fallback; Windows standard A2DP Receiver as a separate input adapter.
+1. **Flutter 应用**：统一三端界面、文案、导航、状态映射和用户操作，不直接访问系统音频 API。
+2. **平台网关**：对 UI 暴露稳定的类型化契约；区分未接入、无设备、需要权限、运行中和失败，禁止用模拟数据填充。
+3. **平台音频插件**：Windows 使用 WASAPI / Windows Bluetooth API；macOS 使用 CoreAudio / ScreenCaptureKit；Android 使用 MediaProjection / AudioPlaybackCapture / AudioTrack。
+4. **Rust 共享核心**：持有跨平台领域模型、校验、链路策略、恢复状态和后续传输实现，通过稳定 C ABI 暴露。
+5. **凭据与权限**：权限提示、系统凭据存储、托盘或菜单栏生命周期仍由平台插件负责。
 
-The shared Rust crate is intentionally platform-neutral. Each application owns permission prompts, OS lifecycle, tray/menu behavior, and device-specific audio routing.
+## 媒体数据面
 
-## Proposed media pipeline
+实时 PCM 帧不通过普通 MethodChannel 高频传递。平台音频插件、原生缓冲区和 Rust 数据面之间使用 FFI 或平台内原生调用；Flutter 只接收低频状态和控制事件。
 
-1. Capture PCM frames from a system or application source.
-2. Stamp frames with a session ID and monotonic presentation time.
-3. Resample into the negotiated session format.
-4. Encode for the selected quality preference.
-5. Encrypt and transport frames over the selected local link.
-6. Jitter-buffer, decode, resample, and mix on the sink.
-7. Mark BlueBridge render endpoints so capture adapters can reject feedback loops.
+目标音频管线：
 
-## Security boundary
+1. 从系统或应用来源采集 PCM 帧。
+2. 写入会话 ID 和单调时钟时间戳。
+3. 重采样到协商格式并编码。
+4. 通过本地加密链路发送。
+5. 在接收端进行抖动缓冲、解码、重采样和混音。
+6. 标记 BlueBridge 输出，防止采集端产生音频回环。
 
-- Device identity is created locally.
-- First pairing requires confirmation on both devices.
-- Trusted-device credentials are stored in the OS credential store.
-- Audio sessions use ephemeral keys and never require a cloud account.
-- Discovery advertisements contain no audio and do not grant session access.
+## 安全边界
+
+- 不需要 GPT 或其他云账户登录。
+- 设备身份在本地生成。
+- 首次配对必须在双方设备确认。
+- 凭据写入操作系统凭据库。
+- 音频会话使用临时密钥，不经云端转发。
