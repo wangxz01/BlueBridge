@@ -1,25 +1,28 @@
 # 实现状态
 
-本文档是仓库当前能力边界的事实来源。未完成的能力不会以模拟状态冒充真实实现。
+本文档记录当前 `main` 分支真正具备的能力。未完成的能力不会用模拟状态代替。
 
 | 能力 | 状态 |
 |---|---|
-| Flutter Windows、macOS、Android 统一应用工程 | 已创建并完成 UI 重置 |
-| Flutter 中文响应式 UI 与真实空状态 | 已实现并通过组件测试 |
-| Flutter 平台音频网关 | 尚未接入 |
-| 旧 Windows、macOS、Android 原生工程 | 作为迁移参考保留 |
-| 共享设备、信任、路由和预设模型 | 已实现并通过测试 |
-| 路由校验与音频环路阻止 | 已在共享核心实现 |
-| 链路偏好与重连退避 | 已在共享核心实现 |
-| macOS 系统音频采集 | v0.2 已通过 ScreenCaptureKit 实现 |
-| macOS CoreAudio 输出发现与本机播放 | v0.2 已实现 |
-| macOS 逐应用采集 | 未实现 |
-| 局域网发现 | 仅有适配器契约，未实现 |
-| 加密实时音频传输 | 未实现 |
-| Windows WASAPI 采集与混音 | 未实现 |
-| Windows 标准 A2DP Receiver | 未实现 |
-| Android 播放捕获与最终混音 | 未实现 |
-| BlueBridge Bluetooth 媒体传输 | 未实现 |
-| 三端签名、安装器与自动更新 | 未实现 |
+| Flutter Android、macOS、Windows 工程 | 已创建 |
+| 统一中文响应式 UI | 已实现 |
+| 概览、路由、设备、设置导航 | 已实现 |
+| 未接入能力的真实空状态 | 已实现 |
+| Android、macOS、Windows 品牌图标 | 已实现 |
+| Flutter 静态检查 | 通过 |
+| Flutter 组件测试 | 2 项通过 |
+| macOS Flutter Release 编译 | 已在开发环境验证 |
+| Rust 设备、信任、路由和预设模型 | 已实现 |
+| Rust 路由校验与音频环路阻止 | 已实现 |
+| Rust 链路选择与重连退避 | 已实现 |
+| Rust 单元测试 | 4 项通过 |
+| Flutter 平台音频网关 | 未实现 |
+| Rust C ABI / Dart FFI | 未实现 |
+| macOS 系统音频采集与输出 | 未实现 |
+| Windows WASAPI 与 A2DP 接收 | 未实现 |
+| Android 播放捕获与 AudioTrack | 未实现 |
+| 局域网发现与可信配对 | 未实现 |
+| 加密实时音频与多路混音 | 未实现 |
+| 正式签名、安装包和自动更新 | 未实现 |
 
-`web-prototype/` 只是 UI 参考，不属于运行时产品，也不能满足任何系统音频验收条件。
+当前版本是跨平台 UI 和工程基础版，不能完成真实音频路由。
